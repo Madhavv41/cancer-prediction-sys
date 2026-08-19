@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}History — CancerCare AI{% endblock %}
+
+{% block content %}
+<div class="page-header animate-fade-down">
+    <h1>Prediction <span class="gradient-text">History</span></h1>
+    <p>Review all your past cancer risk assessments.</p>
+</div>
+
+<div class="history-stats animate-slide-up">
+    <div class="history-stat-card">
+        <span class="history-stat-value">{{ predictions|length }}</span>
+        <span class="history-stat-label">Total Predictions</span>
+    </div>
+    <div class="history-stat-card">
+        <span class="history-stat-value">{{ cancer_count }}</span>
+        <span class="history-stat-label">Cancer Detected</span>
+    </div>
+    <div class="history-stat-card">
+        <span class="history-stat-value">{{ no_cancer_count }}</span>
+        <span class="history-stat-label">No Cancer</span>
+    </div>
+</div>
+
+{% if predictions %}
+<div class="history-table-wrapper animate-fade-up">
+    <table class="history-table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Age</th>
+                <th>Gender</th>
+                <th>BMI</th>
+                <th>Smoking</th>
+                <th>Result</th>
+                <th>Confidence</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in predictions %}
+            <tr class="history-row animate-fade-up" style="animation-delay: {{ loop.index * 0.05 }}s">
+                <td class="date-cell">{{ p.created_at[:19].replace('T', ' ') }}</td>
+                <td>{{ p.age|int }}</td>
+                <td>{{ 'Male' if p.gender == 1 else 'Female' }}</td>
+                <td>{{ "%.1f"|format(p.bmi) }}</td>
+                <td>{{ 'Yes' if p.smoking == 1 else 'No' }}</td>
+                <td>
+                    <span class="badge {% if p.prediction_label == 'Cancer' %}badge-danger{% else %}badge-success{% endif %}">
+                        {{ p.prediction_label }}
+                    </span>
+                </td>
+                <td>
+                    <div class="mini-confidence">
+                        <div class="mini-confidence-bar">
+                            <div class="mini-confidence-fill {% if p.prediction_label == 'Cancer' %}fill-danger{% else %}fill-success{% endif %}"
+                                 style="width: {{ (p.confidence * 100)|round|int }}%"></div>
+                        </div>
+                        <span>{{ "%.1f"|format(p.confidence * 100) }}%</span>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="empty-state animate-scale-in">
+    <div class="empty-icon">&#128203;</div>
+    <h3>No Predictions Yet</h3>
+    <p>Run your first cancer risk assessment to see results here.</p>
+    <a href="{{ url_for('predict_route') }}" class="btn btn-primary">Start Prediction</a>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}Home — CancerCare AI{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div class="hero-content animate-slide-up">
+        <span class="hero-badge">Machine Learning Powered</span>
+        <h1>Early Detection Starts with <span class="gradient-text">Smart Insights</span></h1>
+        <p class="hero-subtitle">
+            Our Random Forest model analyzes key health indicators to assess cancer risk
+            with confidence scores — helping you make informed healthcare decisions.
+        </p>
+        <div class="hero-actions">
+            <a href="{{ url_for('predict_route') }}" class="btn btn-primary btn-lg pulse-hover">
+                Start Prediction
+            </a>
+            {% if not session.get('user_id') %}
+            <a href="{{ url_for('register') }}" class="btn btn-outline btn-lg">
+                Create Account
+            </a>
+            {% else %}
+            <a href="{{ url_for('history') }}" class="btn btn-outline btn-lg">
+                View History
+            </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="hero-visual animate-slide-left">
+        <div class="stat-card float-animation">
+            <div class="stat-icon cancer-icon">&#128137;</div>
+            <div class="stat-info">
+                <span class="stat-value">8</span>
+                <span class="stat-label">Health Factors</span>
+            </div>
+        </div>
+        <div class="stat-card float-animation delay-1">
+            <div class="stat-icon accuracy-icon">&#9889;</div>
+            <div class="stat-info">
+                <span class="stat-value">RF</span>
+                <span class="stat-label">Random Forest Model</span>
+            </div>
+        </div>
+        <div class="stat-card float-animation delay-2">
+            <div class="stat-icon history-icon">&#128202;</div>
+            <div class="stat-info">
+                <span class="stat-value">&#8734;</span>
+                <span class="stat-label">Prediction History</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="features">
+    <h2 class="section-title animate-fade-up">How It Works</h2>
+    <div class="features-grid">
+        <div class="feature-card animate-fade-up delay-1">
+            <div class="feature-number">01</div>
+            <h3>Enter Patient Data</h3>
+            <p>Provide age, BMI, lifestyle factors, genetic risk, and medical history through our intuitive form.</p>
+        </div>
+        <div class="feature-card animate-fade-up delay-2">
+            <div class="feature-number">02</div>
+            <h3>AI Analysis</h3>
+            <p>Our trained model processes your inputs using the same scaling and feature engineering from training.</p>
+        </div>
+        <div class="feature-card animate-fade-up delay-3">
+            <div class="feature-number">03</div>
+            <h3>Get Results</h3>
+            <p>Receive a prediction with confidence score. Logged-in users can track all predictions in history.</p>
+        </div>
+    </div>
+</section>
+
+<section class="cta-section animate-fade-up">
+    <div class="cta-card">
+        <h2>Ready to assess cancer risk?</h2>
+        <p>Join thousands using data-driven health insights.</p>
+        <a href="{{ url_for('predict_route') }}" class="btn btn-primary btn-lg">Get Started Now</a>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+
+{% block title %}Predict — CancerCare AI{% endblock %}
+
+{% block content %}
+<div class="page-header animate-fade-down">
+    <h1>Cancer Risk <span class="gradient-text">Predictor</span></h1>
+    <p>Enter patient health details to generate an AI-powered diagnosis prediction.</p>
+</div>
+
+<div class="predict-layout">
+    <form action="{{ url_for('predict_route') }}" method="POST" class="predict-form animate-slide-up">
+        <div class="form-grid">
+            <div class="form-group">
+                <label for="age">Age</label>
+                <input type="number" id="age" name="age" value="50" min="1" max="120" required>
+            </div>
+
+            <div class="form-group">
+                <label for="gender">Gender</label>
+                <select id="gender" name="gender" required>
+                    <option value="0">Female</option>
+                    <option value="1" selected>Male</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="bmi">BMI</label>
+                <input type="number" id="bmi" name="bmi" value="28.5" step="0.01" min="10" max="60" required>
+            </div>
+
+            <div class="form-group">
+                <label for="smoking">Smoking</label>
+                <select id="smoking" name="smoking" required>
+                    <option value="0" selected>No</option>
+                    <option value="1">Yes</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="genetic_risk">Genetic Risk</label>
+                <select id="genetic_risk" name="genetic_risk" required>
+                    <option value="0">Low (0)</option>
+                    <option value="1" selected>Medium (1)</option>
+                    <option value="2">High (2)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="physical_activity">Physical Activity</label>
+                <input type="number" id="physical_activity" name="physical_activity" value="5.0" step="0.01" min="0" required>
+            </div>
+
+            <div class="form-group">
+                <label for="alcohol_intake">Alcohol Intake</label>
+                <input type="number" id="alcohol_intake" name="alcohol_intake" value="2.5" step="0.01" min="0" required>
+            </div>
+
+            <div class="form-group">
+                <label for="cancer_history">Cancer History</label>
+                <select id="cancer_history" name="cancer_history" required>
+                    <option value="0" selected>No</option>
+                    <option value="1">Yes</option>
+                </select>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-full btn-lg">
+            <span class="btn-icon">&#9889;</span>
+            Predict Diagnosis
+        </button>
+    </form>
+
+    <div class="result-panel animate-slide-left">
+        {% if prediction %}
+        <div class="result-card {% if prediction == 'Cancer' %}result-warning{% else %}result-success{% endif %} animate-scale-in">
+            <div class="result-header">
+                <span class="result-icon">
+                    {% if prediction == 'Cancer' %}&#9888;{% else %}&#10004;{% endif %}
+                </span>
+                <h2>Prediction Result</h2>
+            </div>
+
+            <div class="result-body">
+                <div class="result-item">
+                    <span class="result-label">Diagnosis</span>
+                    <span class="result-value badge {% if prediction == 'Cancer' %}badge-danger{% else %}badge-success{% endif %}">
+                        {{ prediction }}
+                    </span>
+                </div>
+
+                <div class="result-item">
+                    <span class="result-label">Diagnosis Code</span>
+                    <span class="result-value">{{ diagnosis }}</span>
+                </div>
+
+                <div class="result-item">
+                    <span class="result-label">Confidence</span>
+                    <div class="confidence-bar">
+                        <div class="confidence-fill" data-confidence="{{ confidence }}"></div>
+                    </div>
+                    <span class="result-value confidence-text">{{ confidence }}</span>
+                </div>
+            </div>
+
+            {% if session.get('user_id') %}
+            <p class="result-saved">&#10004; Saved to your history</p>
+            {% else %}
+            <p class="result-hint">
+                <a href="{{ url_for('login') }}">Sign in</a> to save this prediction to your history.
+            </p>
+            {% endif %}
+        </div>
+
+        {% elif error %}
+        <div class="result-card result-error animate-shake">
+            <div class="result-header">
+                <span class="result-icon">&#10006;</span>
+                <h2>Error</h2>
+            </div>
+            <p class="error-message">{{ error }}</p>
+        </div>
+
+        {% else %}
+        <div class="result-placeholder animate-fade-up">
+            <div class="placeholder-icon">&#128300;</div>
+            <h3>Awaiting Input</h3>
+            <p>Fill in the form and click predict to see results here.</p>
+            <ul class="placeholder-features">
+                <li>Real-time ML inference</li>
+                <li>Confidence scoring</li>
+                <li>History tracking for registered users</li>
+            </ul>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const fill = document.querySelector('.confidence-fill');
+        if (fill) {
+            const conf = fill.dataset.confidence;
+            if (conf) {
+                const pct = parseFloat(conf.replace('%', ''));
+                setTimeout(() => { fill.style.width = pct + '%'; }, 300);
+            }
+        }
+    });
+</script>
+{% endblock %}

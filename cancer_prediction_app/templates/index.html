@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Cancer Diagnosis Predictor</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Cancer Diagnosis Predictor</h1>
+
+    <p class="description">
+        Enter the patient health details below to
+        generate a prediction from the trained model.
+    </p>
+
+    <form action="/legacy/predict" method="POST">
+
+        <!-- Age -->
+        <label>Age</label>
+
+        <input
+            type="number"
+            name="age"
+            value="50"
+            required
+        >
+
+
+        <!-- Gender -->
+        <label>Gender</label>
+
+        <select name="gender" required>
+
+            <option value="0">Female</option>
+            <option value="1" selected>Male</option>
+
+        </select>
+
+
+        <!-- BMI -->
+        <label>BMI</label>
+
+        <input
+            type="number"
+            name="bmi"
+            value="28.5"
+            step="0.01"
+            required
+        >
+
+
+        <!-- Smoking -->
+        <label>Smoking</label>
+
+        <select name="smoking" required>
+
+            <option value="0" selected>No</option>
+            <option value="1">Yes</option>
+
+        </select>
+
+
+        <!-- Genetic Risk -->
+        <label>Genetic Risk</label>
+
+        <select name="genetic_risk" required>
+
+            <option value="0">0</option>
+            <option value="1" selected>1</option>
+            <option value="2">2</option>
+
+        </select>
+
+
+        <!-- Physical Activity -->
+        <label>Physical Activity</label>
+
+        <input
+            type="number"
+            name="physical_activity"
+            value="5.0"
+            step="0.01"
+            required
+        >
+
+
+        <!-- Alcohol Intake -->
+        <label>Alcohol Intake</label>
+
+        <input
+            type="number"
+            name="alcohol_intake"
+            value="2.5"
+            step="0.01"
+            required
+        >
+
+
+        <!-- Cancer History -->
+        <label>Cancer History</label>
+
+        <select name="cancer_history" required>
+
+            <option value="0" selected>No</option>
+            <option value="1">Yes</option>
+
+        </select>
+
+
+        <button type="submit">
+            Predict Diagnosis
+        </button>
+
+    </form>
+
+
+    {% if prediction %}
+
+    <div class="result">
+
+        <h2>Prediction Result</h2>
+
+        <p>
+            <strong>Prediction:</strong>
+            {{ prediction }}
+        </p>
+
+        <p>
+            <strong>Diagnosis Code:</strong>
+            {{ diagnosis }}
+        </p>
+
+        <p>
+            <strong>Confidence:</strong>
+            {{ confidence }}
+        </p>
+
+    </div>
+
+    {% endif %}
+
+
+    {% if error %}
+
+    <div class="error">
+
+        {{ error }}
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+</body>
+
+</html>
